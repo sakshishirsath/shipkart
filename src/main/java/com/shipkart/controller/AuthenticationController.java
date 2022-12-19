@@ -17,6 +17,12 @@ import javax.validation.Valid;
 public class AuthenticationController {
     private final UserService userService;
 
+    @GetMapping("/register")
+    public String registerPage(Model model) {
+        model.addAttribute("user", new User());
+        return "register";
+    }
+
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

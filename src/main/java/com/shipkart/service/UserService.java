@@ -1,6 +1,6 @@
 package com.shipkart.service;
 
-import com.shipkart.configuraration.SecurityConfig;
+import com.shipkart.configuration.SecurityConfig;
 import com.shipkart.entity.Cart;
 import com.shipkart.entity.CartItem;
 import com.shipkart.entity.User;
@@ -47,6 +47,21 @@ public class UserService implements UserDetailsService {
 
     public User getUserById(Long id) {
         return userRepository.getOne(id);
+    }
+
+    @Transactional
+    public void loadUserCart(User user, Cart sessionCart) {
+        // new user replaces their cart with session cart to save previous progress
+        if (user.getCart() == null) {
+            Cart userCart = new Cart();
+            userCart.setCartItems(new ArrayList<>());
+            for (CartItem item : sessionCart.getCartItems()) {
+                userCart.addItem(item);
+            }
+            sessionCart.setCartItems(new ArrayList<>());
+            user.setCart(userCart);
+            userRepository.save(user);
+        }
     }
 
     @Transactional

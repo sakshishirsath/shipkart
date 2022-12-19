@@ -1,4 +1,4 @@
-package com.shipkart.configuraration;
+package com.shipkart.configuration;
 
 import com.shipkart.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                .antMatchers("/user/**")
+                .hasRole("USER")
+                .antMatchers("/admin/**")
+                .hasRole("ADMIN")
                 .antMatchers("/**")
-                .permitAll().and()
+                .permitAll()
+                .and()
                 .formLogin()
                 .loginPage("/login")
                 .successHandler(authSuccessHandler)
@@ -50,7 +55,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login");
         http.csrf().disable();
         http.headers().frameOptions().disable();
-        }
+    }
 }
-
-
